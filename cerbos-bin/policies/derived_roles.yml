@@ -1,0 +1,16 @@
+---
+apiVersion: "api.cerbos.dev/v1"
+derived_roles:
+  name: todo_derived_roles
+  definitions:
+    - name: admin
+      parentRoles: ["admin"]
+
+    - name: user_that_owns_the_record
+      parentRoles: ["user"]
+      condition:
+        match:
+          expr: request.resource.attr.user == request.principal.id
+
+    - name: any_user
+      parentRoles: ["user"]

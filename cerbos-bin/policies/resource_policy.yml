@@ -1,0 +1,27 @@
+---
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: "default"
+
+  importDerivedRoles:
+  - todo_derived_roles
+
+  resource: todo
+  rules:
+  - actions: ["*"]
+    effect: EFFECT_ALLOW
+    roles:
+    - admin
+
+  - actions: ["create", "view", "update"]
+    derivedRoles:
+    - user_that_owns_the_record
+    effect: EFFECT_ALLOW
+
+  - actions: ["view"]
+    derivedRoles:
+    - any_user
+    effect: EFFECT_ALLOW
+    condition:
+      match:
+        expr: request.resource.attr.public == "true"
