@@ -54,7 +54,7 @@ class TODO(Resource):
 
         return {'message': 'success'}, 201
 
-    @app.route("/todo/<int:id>", methods = ['PUT'])
+    @app.route("/todo/<string:id>", methods = ['PUT'])
     def put(id):
         if not TODO.__authenticate(request.headers['TOKEN']):
             return {'message': 'API key invalid'}, 401
@@ -76,7 +76,8 @@ class TODO(Resource):
 
         return {'data': id}, 200
 
-    def delete(self):
+    @app.route("/todo/<string:id>", methods = ['DELETE'])
+    def delete(id):
         if not TODO.__authenticate(request.headers['TOKEN']):
             return {'message': 'API key invalid'}, 401
         
@@ -99,10 +100,8 @@ class TODO(Resource):
     
     def __authenticate(token):
         if token in Tokens:
-            print("true")
             return True
         else:
-            print("false")
             return False
 
     def check(
@@ -120,7 +119,6 @@ class TODO(Resource):
                 kind="todo", instances={resource.attr["id"]: resource}
             ),
         )
-        print(request)
         try:
             # Make a Cerbos request
             response = client.check_resource_set(request)
